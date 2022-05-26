@@ -11,18 +11,12 @@ router.post('/users', async (req, res) => {
 
     try{
         await user.save()
-        //sendWelcomeEmail(user.email, user.name)
+        sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
         res.status(201).send({user, token})
     } catch (e) {
         res.status(400).send(e)
     }
-
-    // user.save().then(() => {
-    //     res.status(201).send(user)
-    // }).catch((e) => {
-    //     res.status(400).send(e)
-    // })
 })
 
 // Logging in users
@@ -76,12 +70,6 @@ router.get('/users',auth, async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-    // User.find({}).then((users) => {
-    //     res.send(users)
-    // }).catch((e) => {
-    //     res.status(500).send()
-    // })
 })
 
 router.get('/users/me',auth, async (req, res) => {
@@ -108,14 +96,9 @@ router.patch('/users/me',auth , async (req, res) => {
 
 router.delete('/users/me', auth, async (req, res) => {
     try {
-        // const user = await User.findByIdAndDelete(req.user._id)
-
-        // if (!user) {
-        //     return res.status(404).send()
-        // }
-
+        
         await req.user.remove()
-        //sendCancelationEmail(req.user.email, req.user.name)
+        sendCancelationEmail(req.user.email, req.user.name)
         res.send(req.user)
     } catch (e) {
         res.status(500).send()
@@ -178,6 +161,22 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async(req, res) =
     res.status(400).send({ error: error.message })
 })
 
+module.exports = router
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // from 127
 // router.post('/users/me/avatar', auth, upload.single('avatar'), async(req, res) => {
 //     req.user.avatar = req.file.buffer
@@ -194,7 +193,6 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async(req, res) =
 //     res.status(400).send({ error: error.message })
 // })
 
-module.exports = router
 
 
 
